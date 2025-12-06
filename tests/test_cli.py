@@ -62,6 +62,18 @@ def test_cli_request_with_payload(tmp_path: Path, capsys):
     assert payload["status"] == "ok"
 
 
+def test_cli_verbose_outputs_requests(tmp_path: Path, capsys):
+    config = write_config(tmp_path)
+    response = DummyResponse(b"{}")
+    with mock.patch("zontium.client.request.urlopen", return_value=response):
+        exit_code = main(["--config", str(config), "--verbose", "user"])
+
+    assert exit_code == 0
+    captured = capsys.readouterr()
+    assert "GET https://example.com/api/user" in captured.err
+    assert json.loads(captured.out) == {}
+
+
 def test_cli_get_authtoken_without_config(capsys):
     response = DummyResponse(b'{"authtoken": "fresh-token"}')
     with mock.patch("zontium.client.request.urlopen", return_value=response):

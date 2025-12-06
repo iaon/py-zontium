@@ -13,8 +13,9 @@ class CLIError(RuntimeError):
     pass
 
 
-def _load_client(config: Optional[Path]) -> ZontClient:
+def _load_client(config: Optional[Path], verbose: bool) -> ZontClient:
     settings = load_settings(config)
+    settings.verbose = verbose or settings.verbose
     return ZontClient(settings)
 
 
@@ -31,6 +32,7 @@ def _print_json(data) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="CLI for the ZONT API")
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG_PATH, help="Path to config file")
+    parser.add_argument("--verbose", action="store_true", help="Print outgoing requests")
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -76,17 +78,20 @@ def main(argv: Optional[list[str]] = None) -> int:
                 settings = load_settings(args.config)
             except FileNotFoundError:
                 settings = ZontSettings()
+            settings.verbose = args.verbose or settings.verbose
             with ZontClient(settings) as client:
                 _print_json(client.get_authtoken(args.login, args.password))
             return 0
 
-        with _load_client(args.config) as client:
+        with _load_client(args.config, args.verbose) as client:
             if args.command == "show-config":
                 settings = load_settings(args.config)
+                settings.verbose = args.verbose or settings.verbose
                 summary = {
                     "config_path": str(args.config),
                     "base_url": settings.base_url,
                     "timeout": settings.timeout,
+                    "verbose": settings.verbose,
                     "token_present": bool(settings.token),
                 }
                 _print_json(summary)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from typing import Any, Dict, Iterable, Optional
 from urllib import error, parse, request
 
@@ -46,6 +47,8 @@ class ZontClient:
         headers = self.settings.headers
         if json_payload is not None:
             data_bytes = json.dumps(json_payload).encode("utf-8")
+
+        self._log_request(method, path, headers, params=params, payload=json_payload)
 
         req = request.Request(
             self._make_url(path, params),
@@ -127,6 +130,27 @@ class ZontClient:
 
     def close(self) -> None:
         return None
+
+    def _log_request(
+        self,
+        method: str,
+        path: str,
+        headers: Dict[str, str],
+        *,
+        params: Optional[Dict[str, Any]] = None,
+        payload: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        if not self.settings.verbose:
+            return
+
+        url = self._make_url(path, params)
+        safe_headers = {
+            key: ("***" if key.lower() == "authorization" else value) for key, value in headers.items()
+        }
+        message_parts = [f"{method.upper()} {url}", f"Headers: {json.dumps(safe_headers, ensure_ascii=False)}"]
+        if payload is not None:
+            message_parts.append(f"Payload: {json.dumps(payload, ensure_ascii=False)}")
+        print(" | ".join(message_parts), file=sys.stderr)
 
     def __enter__(self) -> "ZontClient":
         return self

@@ -77,3 +77,16 @@ def test_call_raw_with_params(client):
     with mock_urlopen(response):
         result = client.call_raw("get", "custom/path", params={"a": 1})
     assert result == {"hello": "world"}
+
+
+def test_verbose_request_logging(capsys):
+    settings = ZontSettings(base_url="https://example.com/api", token="secret", verbose=True)
+    response = DummyResponse(b"{}")
+    with ZontClient(settings) as client:
+        with mock_urlopen(response):
+            client.get_user()
+
+    output = capsys.readouterr().err
+    assert "GET https://example.com/api/user" in output
+    assert "Authorization" in output
+    assert "secret" not in output  # redacted

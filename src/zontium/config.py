@@ -15,6 +15,7 @@ class ZontSettings:
     base_url: str = "https://zont-online.ru/api"
     token: str = ""
     timeout: float = 10.0
+    verbose: bool = False
 
     @property
     def headers(self) -> Dict[str, str]:
@@ -85,6 +86,7 @@ def load_settings(path: Path | str | None = None) -> ZontSettings:
         base_url=str(content.get("base_url", ZontSettings.base_url)),
         token=str(content.get("token", "")),
         timeout=float(content.get("timeout", ZontSettings.timeout)),
+        verbose=bool(content.get("verbose", ZontSettings.verbose)),
     )
 
 
