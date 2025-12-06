@@ -1,6 +1,6 @@
 # py-zontium
 
-Python библиотека и CLI для управления устройствами ZONT через официальное API. Вдохновлено интерфейсом [`ya-whatsminer-cli`](https://github.com/iaon/ya-whatsminer-cli).
+Python библиотека и CLI для управления устройствами ZONT через официальное API.
 
 ## Содержание / Table of Contents
 - [Установка / Installation](#установка--installation)
