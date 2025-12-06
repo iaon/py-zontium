@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zontium"
+version = "0.1.0"
+description = "CLI and Python client for the ZONT device API"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{name = "Zontium Maintainers"}]
+dependencies = []
+
+[project.urls]
+Homepage = "https://zont-online.ru/api/docs"
+Repository = "https://github.com/example/py-zontium"
+
+[project.scripts]
+zontium = "zontium.cli:main"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.4",
+]
