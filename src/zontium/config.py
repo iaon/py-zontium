@@ -18,7 +18,10 @@ class ZontSettings:
 
     @property
     def headers(self) -> Dict[str, str]:
-        headers: Dict[str, str] = {"Content-Type": "application/json"}
+        headers: Dict[str, str] = {
+            "Content-Type": "application/json",
+            "X-ZONT-Client": "https://github.com/iaon/py-zontium",
+        }
         if self.token:
             headers["Authorization"] = f"Bearer {self.token}"
         return headers

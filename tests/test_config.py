@@ -14,6 +14,7 @@ def test_load_yaml_settings(tmp_path: Path):
     assert settings.token == "abc"
     assert settings.timeout == 5
     assert settings.headers["Authorization"] == "Bearer abc"
+    assert settings.headers["X-ZONT-Client"] == "https://github.com/iaon/py-zontium"
 
 
 def test_load_json_settings(tmp_path: Path):
@@ -24,6 +25,7 @@ def test_load_json_settings(tmp_path: Path):
     assert settings.base_url == "https://json.example"
     assert settings.timeout == 2
     assert settings.headers["Authorization"] == "Bearer xyz"
+    assert settings.headers["X-ZONT-Client"] == "https://github.com/iaon/py-zontium"
 
 
 def test_missing_config_raises(tmp_path: Path):
@@ -41,3 +43,4 @@ def test_defaults_used_when_not_provided(tmp_path: Path, monkeypatch):
     assert settings.timeout == ZontSettings.timeout
     assert settings.token == ""
     assert "Authorization" not in settings.headers
+    assert settings.headers["X-ZONT-Client"] == "https://github.com/iaon/py-zontium"
