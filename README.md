@@ -22,11 +22,13 @@ python -m pip install .[dev]
 - `examples/config.example.yaml`
 - `examples/config.example.json`
 
-Затем сохраните итоговый файл как `~/.config/zontium/config.yaml` (или укажите свой путь через `--config`). Файл может быть в YAML или JSON формате. CLI проверяет наличие токена и использует его в заголовке `Authorization: Bearer <token>`. Опциональное поле `verbose: true` включает вывод исходящих запросов. Получить токен можно через API:
+Затем сохраните итоговый файл как `~/.config/zontium/config.yaml` (или укажите свой путь через `--config`). Файл может быть в YAML или JSON формате. CLI проверяет наличие токена и использует его в заголовке `Authorization: Bearer <token>` вместе с обязательным идентификатором клиента `X-ZONT-Client: https://github.com/iaon/py-zontium`. Опциональное поле `verbose: true` включает вывод исходящих запросов. Получить токен можно через API с HTTP Basic аутентификацией:
 
 ```bash
-# Вернет свежий токен без необходимости существующего конфига
-zontium get-authtoken <login> <password>
+# Вернет свежий токен без необходимости существующего конфига.
+# Отправляется заголовок Authorization: Basic base64(login:password)
+# и тело {"client_name": "<ваше приложение>"}
+zontium get-authtoken <login> <password> [--client-name "My app"]
 ```
 
 ## Использование CLI / CLI Usage
@@ -57,7 +59,7 @@ zontium action <device_id> set_relay --payload '{"relay":1,"state":"on"}'
 zontium request POST devices/123/custom --payload '{"value": 1}'
 
 # Запросить новый токен / Request new token
-zontium get-authtoken login password
+zontium get-authtoken login password --client-name "My app"
 ```
 
 ## Python API

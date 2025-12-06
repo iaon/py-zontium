@@ -76,9 +76,17 @@ def test_cli_verbose_outputs_requests(tmp_path: Path, capsys):
 
 def test_cli_get_authtoken_without_config(capsys):
     response = DummyResponse(b'{"authtoken": "fresh-token"}')
-    with mock.patch("zontium.client.request.urlopen", return_value=response):
-        exit_code = main(["get-authtoken", "login", "password"])
+    captured = {}
+
+    def fake_urlopen(req, timeout=None):
+        captured["request"] = req
+        return response
+
+    with mock.patch("zontium.client.request.urlopen", side_effect=fake_urlopen):
+        exit_code = main(["get-authtoken", "login", "password", "--client-name", "My app"])
 
     assert exit_code == 0
     payload = json.loads(capsys.readouterr().out)
     assert payload["authtoken"] == "fresh-token"
+    assert captured["request"].headers.get("Authorization") == "Basic bG9naW46cGFzc3dvcmQ="
+    assert json.loads(captured["request"].data.decode("utf-8")) == {"client_name": "My app"}

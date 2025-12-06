@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import json
 import sys
 from typing import Any, Dict, Iterable, Optional
@@ -42,9 +43,15 @@ class ZontClient:
         *,
         params: Optional[Dict[str, Any]] = None,
         json_payload: Optional[Dict[str, Any]] = None,
+        include_token: bool = True,
+        extra_headers: Optional[Dict[str, str]] = None,
     ) -> Dict[str, Any]:
         data_bytes = None
-        headers = self.settings.headers
+        headers = self.settings.headers.copy()
+        if not include_token:
+            headers.pop("Authorization", None)
+        if extra_headers:
+            headers.update(extra_headers)
         if json_payload is not None:
             data_bytes = json.dumps(json_payload).encode("utf-8")
 
@@ -89,11 +96,18 @@ class ZontClient:
     def list_devices(self) -> Dict[str, Any]:
         return self._request("GET", "devices")
 
-    def get_authtoken(self, login: str, password: str) -> Dict[str, Any]:
+    def get_authtoken(self, login: str, password: str, *, client_name: str = "py-zontium") -> Dict[str, Any]:
         """Request a fresh authentication token using login credentials."""
 
-        payload = {"login": login, "password": password}
-        return self._request("POST", "get_authtoken", json_payload=payload)
+        credentials = base64.b64encode(f"{login}:{password}".encode("utf-8")).decode("utf-8")
+        payload = {"client_name": client_name}
+        return self._request(
+            "POST",
+            "get_authtoken",
+            json_payload=payload,
+            include_token=False,
+            extra_headers={"Authorization": f"Basic {credentials}"},
+        )
 
     def get_device(self, device_id: str) -> Dict[str, Any]:
         return self._request("GET", f"devices/{device_id}")

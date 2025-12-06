@@ -1,4 +1,5 @@
 import io
+import json
 from urllib import error
 from unittest import mock
 
@@ -67,9 +68,20 @@ def test_execute_action(client):
 
 def test_get_authtoken(client):
     response = DummyResponse(b'{"authtoken": "secret-token"}')
-    with mock_urlopen(response):
-        payload = client.get_authtoken("user", "password")
+    captured = {}
+
+    def fake_urlopen(req, timeout=None):
+        captured["request"] = req
+        return response
+
+    with mock_urlopen(side_effect=fake_urlopen):
+        payload = client.get_authtoken("user", "password", client_name="Cool app")
+
     assert payload["authtoken"] == "secret-token"
+    sent_headers = captured["request"].headers
+    assert sent_headers.get("Authorization") == "Basic dXNlcjpwYXNzd29yZA=="
+    assert "Bearer" not in sent_headers.get("Authorization", "")
+    assert json.loads(captured["request"].data.decode("utf-8")) == {"client_name": "Cool app"}
 
 
 def test_call_raw_with_params(client):

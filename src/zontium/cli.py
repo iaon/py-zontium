@@ -41,6 +41,9 @@ def build_parser() -> argparse.ArgumentParser:
     auth_parser = subparsers.add_parser("get-authtoken", help="Obtain token using login credentials")
     auth_parser.add_argument("login", help="User login")
     auth_parser.add_argument("password", help="User password")
+    auth_parser.add_argument(
+        "--client-name", default="py-zontium", help="Custom client name passed to the API"
+    )
 
     subparsers.add_parser("user", help="Fetch account information")
 
@@ -80,7 +83,9 @@ def main(argv: Optional[list[str]] = None) -> int:
                 settings = ZontSettings()
             settings.verbose = args.verbose or settings.verbose
             with ZontClient(settings) as client:
-                _print_json(client.get_authtoken(args.login, args.password))
+                _print_json(
+                    client.get_authtoken(args.login, args.password, client_name=args.client_name)
+                )
             return 0
 
         with _load_client(args.config, args.verbose) as client:
