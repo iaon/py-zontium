@@ -87,7 +87,7 @@ def test_get_authtoken(client):
 def test_call_raw_with_params(client):
     response = DummyResponse(b'{"hello": "world"}')
     with mock_urlopen(response):
-        result = client.call_raw("get", "custom/path", params={"a": 1})
+        result = client.call_raw("post", "custom/path", params={"a": 1})
     assert result == {"hello": "world"}
 
 
@@ -99,6 +99,6 @@ def test_verbose_request_logging(capsys):
             client.get_user()
 
     output = capsys.readouterr().err
-    assert "GET https://example.com/api/user" in output
+    assert "POST https://example.com/api/user" in output
     assert "X-ZONT-Token" in output
     assert "secret" not in output  # redacted

@@ -91,10 +91,10 @@ class ZontClient:
 
     # Convenience wrappers for common API methods
     def get_user(self) -> Dict[str, Any]:
-        return self._request("GET", "user")
+        return self._request("POST", "user")
 
     def list_devices(self) -> Dict[str, Any]:
-        return self._request("GET", "devices")
+        return self._request("POST", "devices")
 
     def get_authtoken(self, login: str, password: str, *, client_name: str = "py-zontium") -> Dict[str, Any]:
         """Request a fresh authentication token using login credentials."""
@@ -110,7 +110,7 @@ class ZontClient:
         )
 
     def get_device(self, device_id: str) -> Dict[str, Any]:
-        return self._request("GET", f"devices/{device_id}")
+        return self._request("POST", f"devices/{device_id}")
 
     def get_device_history(
         self,
@@ -121,7 +121,7 @@ class ZontClient:
     ) -> Dict[str, Any]:
         params = {"from": from_ts, "to": to_ts}
         filtered_params = {k: v for k, v in params.items() if v is not None}
-        return self._request("GET", f"devices/{device_id}/history", params=filtered_params)
+        return self._request("POST", f"devices/{device_id}/history", params=filtered_params)
 
     def execute_action(self, device_id: str, action: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         return self._request("POST", f"devices/{device_id}/{action}", json_payload=payload)

@@ -70,7 +70,7 @@ def test_cli_verbose_outputs_requests(tmp_path: Path, capsys):
 
     assert exit_code == 0
     captured = capsys.readouterr()
-    assert "GET https://example.com/api/user" in captured.err
+    assert "POST https://example.com/api/user" in captured.err
     assert json.loads(captured.out) == {}
 
 
