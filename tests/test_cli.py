@@ -60,3 +60,13 @@ def test_cli_request_with_payload(tmp_path: Path, capsys):
     assert exit_code == 0
     payload = json.loads(capsys.readouterr().out)
     assert payload["status"] == "ok"
+
+
+def test_cli_get_authtoken_without_config(capsys):
+    response = DummyResponse(b'{"authtoken": "fresh-token"}')
+    with mock.patch("zontium.client.request.urlopen", return_value=response):
+        exit_code = main(["get-authtoken", "login", "password"])
+
+    assert exit_code == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["authtoken"] == "fresh-token"

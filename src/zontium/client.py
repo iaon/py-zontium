@@ -86,6 +86,12 @@ class ZontClient:
     def list_devices(self) -> Dict[str, Any]:
         return self._request("GET", "devices")
 
+    def get_authtoken(self, login: str, password: str) -> Dict[str, Any]:
+        """Request a fresh authentication token using login credentials."""
+
+        payload = {"login": login, "password": password}
+        return self._request("POST", "get_authtoken", json_payload=payload)
+
     def get_device(self, device_id: str) -> Dict[str, Any]:
         return self._request("GET", f"devices/{device_id}")
 

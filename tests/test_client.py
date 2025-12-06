@@ -65,6 +65,13 @@ def test_execute_action(client):
     assert payload["status"] == "ok"
 
 
+def test_get_authtoken(client):
+    response = DummyResponse(b'{"authtoken": "secret-token"}')
+    with mock_urlopen(response):
+        payload = client.get_authtoken("user", "password")
+    assert payload["authtoken"] == "secret-token"
+
+
 def test_call_raw_with_params(client):
     response = DummyResponse(b'{"hello": "world"}')
     with mock_urlopen(response):

@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 from .client import ZontClient
-from .config import DEFAULT_CONFIG_PATH, load_settings
+from .config import DEFAULT_CONFIG_PATH, ZontSettings, load_settings
 
 
 class CLIError(RuntimeError):
@@ -35,6 +35,10 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     subparsers.add_parser("show-config", help="Display loaded configuration")
+
+    auth_parser = subparsers.add_parser("get-authtoken", help="Obtain token using login credentials")
+    auth_parser.add_argument("login", help="User login")
+    auth_parser.add_argument("password", help="User password")
 
     subparsers.add_parser("user", help="Fetch account information")
 
@@ -67,6 +71,15 @@ def main(argv: Optional[list[str]] = None) -> int:
     args = parser.parse_args(argv)
 
     try:
+        if args.command == "get-authtoken":
+            try:
+                settings = load_settings(args.config)
+            except FileNotFoundError:
+                settings = ZontSettings()
+            with ZontClient(settings) as client:
+                _print_json(client.get_authtoken(args.login, args.password))
+            return 0
+
         with _load_client(args.config) as client:
             if args.command == "show-config":
                 settings = load_settings(args.config)
