@@ -1,0 +1,6 @@
+# Local configuration copies (do not commit secrets)
+config.yaml
+config.json
+config.yml
+examples/config.yaml
+examples/config.json
