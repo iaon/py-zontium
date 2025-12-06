@@ -1,5 +1,5 @@
 {
-  "base_url": "https://zont-online.ru/api",
+  // "base_url": "https://zont-online.ru/api",
   "token": "your_api_token",
   "timeout": 10
 }

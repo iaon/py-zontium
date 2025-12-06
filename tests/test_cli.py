@@ -90,3 +90,31 @@ def test_cli_get_authtoken_without_config(capsys):
     assert payload["authtoken"] == "fresh-token"
     assert captured["request"].headers.get("Authorization") == "Basic bG9naW46cGFzc3dvcmQ="
     assert json.loads(captured["request"].data.decode("utf-8")) == {"client_name": "My app"}
+
+
+def test_cli_works_with_token_without_config(tmp_path: Path, capsys):
+    missing_config = tmp_path / "absent.yaml"
+    response = DummyResponse(b'{"items": []}')
+    captured = {}
+
+    def fake_urlopen(req, timeout=None):
+        captured["request"] = req
+        return response
+
+    with mock.patch("zontium.client.request.urlopen", side_effect=fake_urlopen):
+        exit_code = main([
+            "--config",
+            str(missing_config),
+            "--token",
+            "token-from-cli",
+            "--base-url",
+            "https://cli.example/api",
+            "devices",
+        ])
+
+    assert exit_code == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["items"] == []
+    request_obj = captured["request"]
+    assert request_obj.get_full_url() == "https://cli.example/api/devices"
+    assert request_obj.headers["X-zont-token"] == "token-from-cli"

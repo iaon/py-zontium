@@ -17,7 +17,8 @@ python -m pip install .[dev]
 ```
 
 ## Конфигурация / Configuration
-Сначала возьмите один из примеров конфигурации и подставьте свой токен:
+Сначала возьмите один из примеров конфигурации и подставьте свой токен. Поле `base_url`
+необязательно — по умолчанию используется `https://zont-online.ru/api`:
 
 - `examples/config.example.yaml`
 - `examples/config.example.json`
@@ -36,6 +37,9 @@ zontium get-authtoken <login> <password> [--client-name "My app"]
 ```bash
 # Показать информацию о конфигурации / Show configuration
 zontium show-config
+
+# Использовать токен напрямую без конфиг-файла / Use token without config file
+zontium --token "your_api_token" [--base-url https://zont-online.ru/api] devices
 
 # Включить вывод запросов / Enable request logging
 zontium --verbose user
