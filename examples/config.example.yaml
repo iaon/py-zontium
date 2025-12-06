@@ -1,4 +1,4 @@
-base_url: https://zont-online.ru/api
+# base_url: https://zont-online.ru/api
 # токен авторизации / authorization token
 token: "your_api_token"
 # таймаут запросов в секундах / request timeout in seconds
