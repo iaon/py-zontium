@@ -49,7 +49,7 @@ class ZontClient:
         data_bytes = None
         headers = self.settings.headers.copy()
         if not include_token:
-            headers.pop("Authorization", None)
+            headers.pop("X-ZONT-Token", None)
         if extra_headers:
             headers.update(extra_headers)
         if json_payload is not None:
@@ -159,7 +159,8 @@ class ZontClient:
 
         url = self._make_url(path, params)
         safe_headers = {
-            key: ("***" if key.lower() == "authorization" else value) for key, value in headers.items()
+            key: ("***" if key.lower() in {"authorization", "x-zont-token"} else value)
+            for key, value in headers.items()
         }
         message_parts = [f"{method.upper()} {url}", f"Headers: {json.dumps(safe_headers, ensure_ascii=False)}"]
         if payload is not None:

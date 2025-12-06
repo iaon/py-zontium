@@ -22,7 +22,7 @@ python -m pip install .[dev]
 - `examples/config.example.yaml`
 - `examples/config.example.json`
 
-Затем сохраните итоговый файл как `~/.config/zontium/config.yaml` (или укажите свой путь через `--config`). Файл может быть в YAML или JSON формате. CLI проверяет наличие токена и использует его в заголовке `Authorization: Bearer <token>` вместе с обязательным идентификатором клиента `X-ZONT-Client: https://github.com/iaon/py-zontium`. Опциональное поле `verbose: true` включает вывод исходящих запросов. Получить токен можно через API с HTTP Basic аутентификацией:
+Затем сохраните итоговый файл как `~/.config/zontium/config.yaml` (или укажите свой путь через `--config`). Файл может быть в YAML или JSON формате. CLI проверяет наличие токена и использует его в заголовке `X-ZONT-Token: <token>` вместе с обязательным идентификатором клиента `X-ZONT-Client: https://github.com/iaon/py-zontium`. Опциональное поле `verbose: true` включает вывод исходящих запросов. Получить токен можно через API с HTTP Basic аутентификацией:
 
 ```bash
 # Вернет свежий токен без необходимости существующего конфига.

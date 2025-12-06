@@ -24,7 +24,7 @@ class ZontSettings:
             "X-ZONT-Client": "https://github.com/iaon/py-zontium",
         }
         if self.token:
-            headers["Authorization"] = f"Bearer {self.token}"
+            headers["X-ZONT-Token"] = self.token
         return headers
 
 

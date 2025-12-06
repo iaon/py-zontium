@@ -80,7 +80,7 @@ def test_get_authtoken(client):
     assert payload["authtoken"] == "secret-token"
     sent_headers = captured["request"].headers
     assert sent_headers.get("Authorization") == "Basic dXNlcjpwYXNzd29yZA=="
-    assert "Bearer" not in sent_headers.get("Authorization", "")
+    assert "X-ZONT-Token" not in sent_headers
     assert json.loads(captured["request"].data.decode("utf-8")) == {"client_name": "Cool app"}
 
 
@@ -100,5 +100,5 @@ def test_verbose_request_logging(capsys):
 
     output = capsys.readouterr().err
     assert "GET https://example.com/api/user" in output
-    assert "Authorization" in output
+    assert "X-ZONT-Token" in output
     assert "secret" not in output  # redacted
